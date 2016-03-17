@@ -153,6 +153,15 @@ uninteresting information, but if you rely on your modeline in other modes,
 you might want to keep it."
   :type 'boolean
   :group 'elpy)
+  
+(defcustom elpy-dedicated-shells t
+  "Non-nil if Elpy should use dedicated shells
+
+elpy can use the same python shell for all buffers and support
+manually dedicated shells. Setting this option to non-nil
+force the creation of dedicated shells for each buffers."
+  :type 'boolean
+  :group 'elpy)
 
 (defcustom elpy-rpc-backend nil
   "Your preferred backend.
@@ -1598,11 +1607,16 @@ code is executed."
 (defun elpy-shell-get-or-create-process ()
   "Get or create an inferior Python process for current buffer and return it."
   (let* ((bufname (format "*%s*" (python-shell-get-process-name nil)))
-         (proc (get-buffer-process bufname)))
-    (if proc
-        proc
-      (run-python (python-shell-parse-command))
-      (get-buffer-process bufname))))
+	 (dedbufname (format "*%s*" (python-shell-get-process-name t)))
+         (proc (get-buffer-process bufname))
+	 (dedproc (get-buffer-process dedbufname)))
+    (if dedproc
+	dedproc
+      (if proc
+	  proc
+	(run-python (python-shell-parse-command) elpy-dedicated-shells)
+	(get-buffer-process bufname)))))
+
 
 (defun elpy-shell--region-without-indentation (beg end)
   "Return the current region as a string, but without indentation."
