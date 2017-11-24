@@ -1593,7 +1593,8 @@ with a prefix argument)."
                              " --ignore="
                            " --exclude=")
                          (mapconcat #'identity
-                                    (elpy-project-ignored-directories) ","))
+                                    (elpy-project-ignored-directories)
+                                    ","))
                       "")))
     (compilation-start (concat python-check-command
                                " "
