@@ -3357,6 +3357,9 @@ Meant to be used as a hook to `after-change-functions'."
 (defvar-local elpy-folding-docstrings-hidden nil
   "If docstrings are globally hidden or not.")
 
+(defvar elpy-folding-class-def-start-regexp
+  "^\s*\\(\\bdef\\b\\|\\bclass\\b\\)")
+
 (defun elpy-folding-find-docstring-overlay-start ()
   "Find where should the docstring overlay start.
 
@@ -3404,7 +3407,7 @@ a problem."
      (elpy-folding-search-docstring-delimiter)
      (when (elpy-folding-request-toggle-docstring-hiding-p)
        (elpy-folding-toggle-hide-docstring t))
-     (while (re-search-forward "^\s*\\(\\bdef\\b\\|\\bclass\\b\\)" nil t)
+     (while (re-search-forward elpy-folding-class-def-start-regexp nil t)
        (search-forward-regexp ":" nil t)
        (elpy-folding-search-docstring-delimiter)
        (when (elpy-folding-request-toggle-docstring-hiding-p)
@@ -3416,7 +3419,6 @@ a problem."
 
 When INTO-DOCSTRING is t, we assume that we are in a docstring and don't bother
 checking."
-  (interactive)
   (when (or into-docstring (python-info-docstring-p))
     (let (docstring-end docstring-start overlay-start indent docstring-is-hidden)
       (save-excursion
