@@ -3540,7 +3540,7 @@ If a region is selected, fold that region."
 	((hs-already-hidden-p)
 	 (hs-show-block))
 	((python-info-docstring-p)
-	 (elpy-folding-toggle-hide-docstring))
+	 (elpy-folding-toggle-hide-docstring t))
 	(t
 	 (hs-hide-block)))))))
 
